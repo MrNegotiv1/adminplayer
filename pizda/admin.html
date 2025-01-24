@@ -1,58 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Token Generator</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    input, button { padding: 10px; margin: 5px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .token-list { margin-top: 20px; }
+        .token-item { margin-bottom: 10px; }
+        button { margin-left: 5px; }
+    </style>
 </head>
 <body>
+    <h2>Панель администратора</h2>
+    <div>
+        <button onclick="generateToken()">Сгенерировать новый токен</button>
+        <div class="token-list" id="token-list"></div>
+    </div>
 
-  <h1>Token Generator</h1>
-  
-  <label for="userID">Enter User ID:</label>
-  <input type="text" id="userID" placeholder="User ID" required>
-  <button onclick="generateToken()">Generate Token</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let tokens = JSON.parse(localStorage.getItem('tokens')) || {};
 
-  <h3>Generated Tokens:</h3>
-  <ul id="tokenList"></ul>
+        function updateTokenList() {
+            const tokenList = document.getElementById('token-list');
+            tokenList.innerHTML = '';
+            Object.keys(tokens).forEach(userId => {
+                const tokenData = tokens[userId];
+                const tokenItem = document.createElement('div');
+                tokenItem.classList.add('token-item');
+                tokenItem.innerHTML = `
+                    <strong>${userId}</strong> - ${tokenData.active ? 'Активен' : 'Неактивен'}
+                    <button onclick="toggleTokenStatus('${userId}')">${tokenData.active ? 'Деактивировать' : 'Активировать'}</button>
+                    <button onclick="deleteToken('${userId}')">Удалить</button>
+                `;
+                tokenList.appendChild(tokenItem);
+            });
+        }
 
-  <script>
-    // Загружаем уже существующие токены (если есть)
-    let tokens = JSON.parse(localStorage.getItem('tokens')) || {};
+        function generateToken() {
+            const userId = prompt('Введите ID игрока:');
+            if (userId && !tokens[userId]) {
+                const token = Math.random().toString(36).substr(2, 8);
+                tokens[userId] = { token: token, active: true };
+                localStorage.setItem('tokens', JSON.stringify(tokens));
+                alert(`Токен для пользователя ${userId}: ${token}`);
+                updateTokenList();
+            } else {
+                alert('Пользователь с таким ID уже существует или вы ввели пустое значение.');
+            }
+        }
 
-    // Функция для генерации токена
-    function generateToken() {
-      let userID = document.getElementById('userID').value;
-      if (userID && !tokens[userID]) {
-        let token = Math.random().toString(36).substring(2, 15); // Генерация случайного токена
-        tokens[userID] = token; // Сохраняем токен в объект
-        localStorage.setItem('tokens', JSON.stringify(tokens)); // Сохраняем в localStorage
+        function toggleTokenStatus(userId) {
+            tokens[userId].active = !tokens[userId].active;
+            localStorage.setItem('tokens', JSON.stringify(tokens));
+            updateTokenList();
+        }
 
-        displayTokens(); // Обновляем отображение токенов
-        alert(`Токен для пользователя ${userID} сгенерирован: ${token}`);
-      } else {
-        alert('Пользователь с таким ID уже существует или вы не ввели ID.');
-      }
-    }
+        function deleteToken(userId) {
+            delete tokens[userId];
+            localStorage.setItem('tokens', JSON.stringify(tokens));
+            updateTokenList();
+        }
 
-    // Функция для отображения списка токенов
-    function displayTokens() {
-      const tokenList = document.getElementById('tokenList');
-      tokenList.innerHTML = ''; // Очистить список
-
-      Object.keys(tokens).forEach(userID => {
-        let li = document.createElement('li');
-        li.textContent = `${userID}: ${tokens[userID]}`;
-        tokenList.appendChild(li);
-      });
-    }
-
-    displayTokens(); // Изначально отображаем токены
-  </script>
-
+        updateTokenList();
+    </script>
 </body>
 </html>
