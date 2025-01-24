@@ -1,48 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Activate Token</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    input, button { padding: 10px; margin: 5px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Panel</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+    </style>
 </head>
 <body>
+    <h2>Панель игрока</h2>
+    <label for="token-input">Введите ваш токен:</label>
+    <input type="text" id="token-input" placeholder="Введите токен">
+    <button onclick="validateToken()">Проверить токен</button>
 
-  <h1>Activate Token</h1>
-  
-  <label for="token">Enter Token:</label>
-  <input type="text" id="token" placeholder="Enter your token" required>
-  <button onclick="activateToken()">Activate</button>
+    <script>
+        const tokens = JSON.parse(localStorage.getItem('tokens')) || {};
+        const tokenInput = document.getElementById('token-input');
 
-  <p id="message"></p>
+        function validateToken() {
+            const token = tokenInput.value;
+            const userId = Object.keys(tokens).find(id => tokens[id].token === token);
 
-  <script>
-    // Загружаем токены из localStorage (сохраненные администратором)
-    let tokens = JSON.parse(localStorage.getItem('tokens')) || {};
-
-    // Функция для активации токена
-    function activateToken() {
-      let tokenInput = document.getElementById('token').value;
-      let messageElement = document.getElementById('message');
-
-      // Проверяем наличие токена в списке
-      let userFound = false;
-      for (let userID in tokens) {
-        if (tokens[userID] === tokenInput) {
-          userFound = true;
-          messageElement.textContent = `Токен для пользователя ${userID} активирован!`;
-          break;
+            if (userId && tokens[userId].active) {
+                alert('Токен принят! Доступ открыт.');
+                // Здесь можете добавить действия, которые будут доступны после валидации токена
+                // Например, активировать модули или функционал
+            } else {
+                alert('Неверный или неактивный токен.');
+            }
         }
-      }
-
-      if (!userFound) {
-        messageElement.textContent = 'Ошибка: Неверный токен!';
-      }
-    }
-  </script>
-
+    </script>
 </body>
 </html>
