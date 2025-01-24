@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, button { padding: 10px; margin: 5px; }
+  </style>
+</head>
+<body>
+
+  <h1>Token Generator</h1>
+  
+  <label for="userID">Enter User ID:</label>
+  <input type="text" id="userID" placeholder="User ID" required>
+  <button onclick="generateToken()">Generate Token</button>
+
+  <h3>Generated Tokens:</h3>
+  <ul id="tokenList"></ul>
+
+  <script>
+    // Загружаем уже существующие токены (если есть)
+    let tokens = JSON.parse(localStorage.getItem('tokens')) || {};
+
+    // Функция для генерации токена
+    function generateToken() {
+      let userID = document.getElementById('userID').value;
+      if (userID && !tokens[userID]) {
+        let token = Math.random().toString(36).substring(2, 15); // Генерация случайного токена
+        tokens[userID] = token; // Сохраняем токен в объект
+        localStorage.setItem('tokens', JSON.stringify(tokens)); // Сохраняем в localStorage
+
+        displayTokens(); // Обновляем отображение токенов
+        alert(`Токен для пользователя ${userID} сгенерирован: ${token}`);
+      } else {
+        alert('Пользователь с таким ID уже существует или вы не ввели ID.');
+      }
+    }
+
+    // Функция для отображения списка токенов
+    function displayTokens() {
+      const tokenList = document.getElementById('tokenList');
+      tokenList.innerHTML = ''; // Очистить список
+
+      Object.keys(tokens).forEach(userID => {
+        let li = document.createElement('li');
+        li.textContent = `${userID}: ${tokens[userID]}`;
+        tokenList.appendChild(li);
+      });
+    }
+
+    displayTokens(); // Изначально отображаем токены
+  </script>
+
+</body>
+</html>
