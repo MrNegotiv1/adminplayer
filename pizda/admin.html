@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ Панель для токенов</title>
+    <title>Админ Панель для генерации токенов</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,17 +34,16 @@
     </style>
 </head>
 <body>
-    <h1>Админ Панель для токенов</h1>
+    <h1>Админ Панель</h1>
     <button id="generate-token">Сгенерировать токен</button>
-    <button id="export-tokens">Экспортировать токены</button>
-    <h3>Список токенов:</h3>
+    <h3>Токены пользователей:</h3>
     <div class="token-list" id="token-list"></div>
 
     <script>
-        // Хранилище токенов
+        // Сохраненные токены в локальном хранилище
         let tokens = JSON.parse(localStorage.getItem('tokens')) || [];
 
-        // Отображение токенов
+        // Функция для отображения токенов
         function displayTokens() {
             const tokenList = document.getElementById('token-list');
             tokenList.innerHTML = '';
@@ -61,44 +60,33 @@
             });
         }
 
-        // Генерация токена
+        // Функция для генерации токенов
         function generateToken() {
-            const token = Math.random().toString(36).substring(2, 15);
-            tokens.push({ token: token, active: true });
+            const token = Math.random().toString(36).substring(2, 15); // Генерация случайного токена
+            const newToken = { token: token, active: false };
+            tokens.push(newToken);
             localStorage.setItem('tokens', JSON.stringify(tokens));
             displayTokens();
         }
 
-        // Активация/деактивация токена
+        // Функция для активации/деактивации токена
         function toggleToken(index) {
             tokens[index].active = !tokens[index].active;
             localStorage.setItem('tokens', JSON.stringify(tokens));
             displayTokens();
         }
 
-        // Удаление токена
+        // Функция для удаления токена
         function deleteToken(index) {
             tokens.splice(index, 1);
             localStorage.setItem('tokens', JSON.stringify(tokens));
             displayTokens();
         }
 
-        // Экспорт токенов
-        function exportTokens() {
-            const data = new Blob([JSON.stringify(tokens, null, 4)], { type: 'application/json' });
-            const url = URL.createObjectURL(data);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'tokens.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Обработчики событий
+        // Обработчик события для кнопки генерации токенов
         document.getElementById('generate-token').addEventListener('click', generateToken);
-        document.getElementById('export-tokens').addEventListener('click', exportTokens);
 
-        // Отобразить токены при загрузке
+        // Отображаем токены при загрузке
         displayTokens();
     </script>
 </body>
