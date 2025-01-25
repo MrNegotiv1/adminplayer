@@ -1,69 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Админ Панель для токенов</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .token-list { margin-top: 20px; }
-        .token-item { margin-bottom: 10px; }
-        button { margin-left: 5px; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .token-list {
+            margin-top: 20px;
+        }
+        .token {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .active {
+            background-color: green;
+            color: white;
+        }
+        .inactive {
+            background-color: red;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <h2>Панель администратора</h2>
-    <div>
-        <button onclick="generateToken()">Сгенерировать новый токен</button>
-        <div class="token-list" id="token-list"></div>
-    </div>
+    <h1>Админ Панель для токенов</h1>
+    <button id="generate-token">Сгенерировать токен</button>
+    <button id="export-tokens">Экспортировать токены</button>
+    <h3>Список токенов:</h3>
+    <div class="token-list" id="token-list"></div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        let tokens = JSON.parse(localStorage.getItem('tokens')) || {};
+        // Хранилище токенов
+        let tokens = JSON.parse(localStorage.getItem('tokens')) || [];
 
-        function updateTokenList() {
+        // Отображение токенов
+        function displayTokens() {
             const tokenList = document.getElementById('token-list');
             tokenList.innerHTML = '';
-            Object.keys(tokens).forEach(userId => {
-                const tokenData = tokens[userId];
-                const tokenItem = document.createElement('div');
-                tokenItem.classList.add('token-item');
-                tokenItem.innerHTML = `
-                    <strong>${userId}</strong> - ${tokenData.active ? 'Активен' : 'Неактивен'}
-                    <button onclick="toggleTokenStatus('${userId}')">${tokenData.active ? 'Деактивировать' : 'Активировать'}</button>
-                    <button onclick="deleteToken('${userId}')">Удалить</button>
+            tokens.forEach((tokenObj, index) => {
+                const tokenDiv = document.createElement('div');
+                tokenDiv.classList.add('token');
+                tokenDiv.innerHTML = `
+                    <strong>Токен: </strong>${tokenObj.token}<br>
+                    <strong>Статус: </strong> <span class="${tokenObj.active ? 'active' : 'inactive'}">${tokenObj.active ? 'Активен' : 'Неактивен'}</span><br>
+                    <button onclick="toggleToken(${index})">${tokenObj.active ? 'Деактивировать' : 'Активировать'}</button>
+                    <button onclick="deleteToken(${index})">Удалить</button>
                 `;
-                tokenList.appendChild(tokenItem);
+                tokenList.appendChild(tokenDiv);
             });
         }
 
+        // Генерация токена
         function generateToken() {
-            const userId = prompt('Введите ID игрока:');
-            if (userId && !tokens[userId]) {
-                const token = Math.random().toString(36).substr(2, 8);
-                tokens[userId] = { token: token, active: true };
-                localStorage.setItem('tokens', JSON.stringify(tokens));
-                alert(`Токен для пользователя ${userId}: ${token}`);
-                updateTokenList();
-            } else {
-                alert('Пользователь с таким ID уже существует или вы ввели пустое значение.');
-            }
-        }
-
-        function toggleTokenStatus(userId) {
-            tokens[userId].active = !tokens[userId].active;
+            const token = Math.random().toString(36).substring(2, 15);
+            tokens.push({ token: token, active: true });
             localStorage.setItem('tokens', JSON.stringify(tokens));
-            updateTokenList();
+            displayTokens();
         }
 
-        function deleteToken(userId) {
-            delete tokens[userId];
+        // Активация/деактивация токена
+        function toggleToken(index) {
+            tokens[index].active = !tokens[index].active;
             localStorage.setItem('tokens', JSON.stringify(tokens));
-            updateTokenList();
+            displayTokens();
         }
 
-        updateTokenList();
+        // Удаление токена
+        function deleteToken(index) {
+            tokens.splice(index, 1);
+            localStorage.setItem('tokens', JSON.stringify(tokens));
+            displayTokens();
+        }
+
+        // Экспорт токенов
+        function exportTokens() {
+            const data = new Blob([JSON.stringify(tokens, null, 4)], { type: 'application/json' });
+            const url = URL.createObjectURL(data);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tokens.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Обработчики событий
+        document.getElementById('generate-token').addEventListener('click', generateToken);
+        document.getElementById('export-tokens').addEventListener('click', exportTokens);
+
+        // Отобразить токены при загрузке
+        displayTokens();
     </script>
 </body>
 </html>
