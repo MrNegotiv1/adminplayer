@@ -138,7 +138,7 @@ main_win.config(bg="#d0d0d0")
 title_bar = tk.Frame(main_win, bg="#4a4a4a", relief="raised", bd=0)
 title_bar.pack(fill="x")
 
-title_label = tk.Label(title_bar, text="𝑩𝑬𝑻𝑨 𝑵𝑬𝑹𝑬𝑺𝑻", bg="#4a4a4a", fg="white")
+title_label = tk.Label(title_bar, text="BETA NEREST", bg="#4a4a4a", fg="white")
 title_label.pack(side="left", padx=10)
 
 # Закрыть окно
