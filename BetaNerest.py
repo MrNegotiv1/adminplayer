@@ -44,7 +44,7 @@ temp_root = tk.Tk()
 temp_root.withdraw()
 user_token = simpledialog.askstring("Авторизация", "Введите токен (тгк @nerest_skripts):")
 if not user_token:
-    messagebox.showinfo("Выход", "Токен не введён. Скрипт завершён.")
+    messagebox.showinfo("Выход", "Токен не введён.")
     exit()
 
 tokens = load_tokens()
@@ -53,7 +53,7 @@ if not is_token_valid(user_token, tokens):
     exit()
 
 user_license = get_license(user_token, tokens)
-messagebox.showinfo("Успешно", f"✅ Доступ разрешён для {user_license.upper()} версии.\nУдерживайте ПРОБЕЛ для активации автокликера.")
+messagebox.showinfo("Успешно", f"✅ Доступ разрешён для {user_license.upper()} версии.\nУдерживайте ПРОБЕЛ для активации.")
 def press_e_t_pattern():
     global e_press_count, auto_click_speed
     pattern = "eeeeeeeeE"
@@ -138,7 +138,7 @@ main_win.config(bg="#d0d0d0")
 title_bar = tk.Frame(main_win, bg="#4a4a4a", relief="raised", bd=0)
 title_bar.pack(fill="x")
 
-title_label = tk.Label(title_bar, text=" NEREST Скрипт", bg="#4a4a4a", fg="white")
+title_label = tk.Label(title_bar, text="𝑩𝑬𝑻𝑨 𝑵𝑬𝑹𝑬𝑺𝑻", bg="#4a4a4a", fg="white")
 title_label.pack(side="left", padx=10)
 
 # Закрыть окно
