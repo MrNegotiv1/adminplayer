@@ -52,18 +52,18 @@ def get_license(token, tokens):
     return "free"
 temp_root = tk.Tk()
 temp_root.withdraw()
-user_token = simpledialog.askstring("Авторизация", "Введите токен (тгк @nerest_skripts):")
+user_token = simpledialog.askstring("Authorization", "Enter token (tgk @nerest_skripts):")
 if not user_token:
-    messagebox.showinfo("Выход", "Токен не введён.")
+    messagebox.showinfo("Exit", "Token not entered.")
     exit()
 
 tokens = load_tokens()
 if not is_token_valid(user_token, tokens):
-    messagebox.showerror("Ошибка", "❌ Неверный или просроченный токен.\nтгк @nerest_skripts")
+    messagebox.showerror("Error", "❌ Invalid or expired token.\ntgk @nerest_skripts")
     exit()
 
 user_license = get_license(user_token, tokens)
-messagebox.showinfo("Успешно", f"✅ Доступ разрешён для {user_license.upper()} версии.\nУдерживайте ПРОБЕЛ для активации.")
+messagebox.showinfo("Успешно", f"✅ Access granted for {user_license.upper()} version.\nGood luck playing.")
 def press_e_t_pattern():
     global e_press_count, auto_click_speed
     pattern = "eeeeeeeeE"
@@ -100,48 +100,48 @@ def build_pro_tab():
         ctk.CTkLabel(frame, text="Настройки PRO", font=ctk.CTkFont(size=16)).pack(pady=10)
 
         # ==== Слайдер задержки ====
-        ctk.CTkLabel(frame, text="Задержка между кликами (сек):").pack(pady=(10, 0))
+        ctk.CTkLabel(frame, text="Скорость Е:").pack(pady=(10, 0))
         speed_slider = ctk.CTkSlider(frame, from_=0.00001, to=0.1, number_of_steps=1000, width=300)
         speed_slider.set(auto_click_speed)
         speed_slider.pack(pady=10)
 
-        current_speed_label = ctk.CTkLabel(frame, text=f"Текущая задержка: {auto_click_speed:.5f} сек")
+        current_speed_label = ctk.CTkLabel(frame, text=f"Текущая скорость: {auto_click_speed:.5f} ")
         current_speed_label.pack()
 
         def on_slider_change(value):
-            current_speed_label.configure(text=f"Текущая задержка: {value:.5f} сек")
+            current_speed_label.configure(text=f"Текущая скорость: {value:.5f} ")
 
         speed_slider.configure(command=on_slider_change)
 
         def save_speed():
             global auto_click_speed
             auto_click_speed = speed_slider.get()
-            messagebox.showinfo("Сохранено", f"Задержка установлена: {auto_click_speed:.5f} сек")
+            messagebox.showinfo("Сохранено", f"Скорость установлена: {auto_click_speed:.5f} ")
 
-        ctk.CTkButton(frame, text="💾 Сохранить задержку", command=save_speed).pack(pady=10)
+        ctk.CTkButton(frame, text="💾 Сохранить скорость", command=save_speed).pack(pady=10)
 
     return frame  # ✅ обязательно!
 
     # ==== Слайдер задержки ====
-    ctk.CTkLabel(frame, text="Задержка между кликами (сек):").pack(pady=(10, 0))
+    ctk.CTkLabel(frame, text="Скорость между кликами (сек):").pack(pady=(10, 0))
     speed_slider = ctk.CTkSlider(frame, from_=0.00001, to=0.1, number_of_steps=1000, width=300)
     speed_slider.set(auto_click_speed)
     speed_slider.pack(pady=10)
 
-    current_speed_label = ctk.CTkLabel(frame, text=f"Текущая задержка: {auto_click_speed:.5f} сек")
+    current_speed_label = ctk.CTkLabel(frame, text=f"Текущая скорость: {auto_click_speed:.5f} ")
     current_speed_label.pack()
 
     def on_slider_change(value):
-        current_speed_label.configure(text=f"Текущая задержка: {value:.5f} сек")
+        current_speed_label.configure(text=f"Текущая скорость: {value:.5f} ")
 
     speed_slider.configure(command=on_slider_change)
 
     def save_speed():
         global auto_click_speed
         auto_click_speed = speed_slider.get()
-        messagebox.showinfo("Сохранено", f"Задержка установлена: {auto_click_speed:.5f} сек")
+        messagebox.showinfo("Сохранено", f"Скорость установлена: {auto_click_speed:.5f} ")
 
-    ctk.CTkButton(frame, text="💾 Сохранить задержку", command=save_speed).pack(pady=10)
+    ctk.CTkButton(frame, text="💾 Сохранить скорость", command=save_speed).pack(pady=10)
 
     # ==== Клавиша активации ====
     key_label = ctk.CTkLabel(frame, text=f"Текущая клавиша: {activation_key.upper()}")
@@ -226,7 +226,7 @@ ctk.set_default_color_theme("blue")  # можешь поменять на "green
 
 # 1) Инициализируем окно
 app = ctk.CTk()
-app.title("NEREST LUXE")
+app.title("NEREST")
 app.geometry("700x450")
 app.attributes("-topmost", True)
 
