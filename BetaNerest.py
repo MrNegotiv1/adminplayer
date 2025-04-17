@@ -118,7 +118,7 @@ def build_pro_tab():
             auto_click_speed = speed_slider.get()
             messagebox.showinfo("Saved", f"Speed ​​set: {auto_click_speed:.5f} ")
 
-        ctk.CTkButton(frame, text="💾 Save speed", command=save_speed).pack(pady=10)
+        ctk.CTkButton(frame, text="Save speed", command=save_speed).pack(pady=10)
 
     return frame  # ✅ обязательно!
 
@@ -141,7 +141,7 @@ def build_pro_tab():
         auto_click_speed = speed_slider.get()
         messagebox.showinfo("Saved", f"Speed ​​set: {auto_click_speed:.5f} ")
 
-    ctk.CTkButton(frame, text="💾 Save speed", command=save_speed).pack(pady=10)
+    ctk.CTkButton(frame, text="Save speed", command=save_speed).pack(pady=10)
 
     # ==== Клавиша активации ====
     key_label = ctk.CTkLabel(frame, text=f"Current key: {activation_key.upper()}")
@@ -164,7 +164,7 @@ def change_key():
     top.lift()
     top.attributes("-topmost", True)
 
-    ctk.CTkButton(frame, text="🎯 Change activation key", command=change_key).pack(pady=5)
+    ctk.CTkButton(frame, text="Change activation key", command=change_key).pack(pady=5)
 
     return frame
 
@@ -204,7 +204,7 @@ def build_settings_tab():
 
         threading.Thread(target=wait_for_key, daemon=True).start()
 
-    ctk.CTkButton(frame, text="🎯 Change activation key", command=change_activation_key).pack(pady=5)
+    ctk.CTkButton(frame, text="Change activation key", command=change_activation_key).pack(pady=5)
 
     return frame
 
@@ -248,13 +248,13 @@ def show_frame(name):
     elif name == "beta":
         beta_frame.pack(fill="both", expand=True)
 
-ctk.CTkButton(sidebar, text="⚙ Настройки", command=lambda: show_frame("settings")).pack(pady=10)
-ctk.CTkButton(sidebar, text="💎 PRO", command=lambda: show_frame("pro")).pack(pady=10)
-ctk.CTkButton(sidebar, text="🧪 BETA", command=lambda: show_frame("beta")).pack(pady=10)
+ctk.CTkButton(sidebar, text="Настройки", command=lambda: show_frame("settings")).pack(pady=10)
+ctk.CTkButton(sidebar, text="PRO", command=lambda: show_frame("pro")).pack(pady=10)
+ctk.CTkButton(sidebar, text="BETA", command=lambda: show_frame("beta")).pack(pady=10)
 # Надпись с ссылкой на Telegram
 ctk.CTkLabel(sidebar, text="Our Telegram:", text_color="white", font=ctk.CTkFont(size=12)).pack(side="bottom", pady=(0, 2))
 ctk.CTkLabel(sidebar, text="@nerest_skripts", text_color="lightblue", font=ctk.CTkFont(size=12, underline=True)).pack(side="bottom")
-ctk.CTkButton(sidebar, text="❌ Exit", fg_color="red", hover_color="#aa0000", command=app.destroy).pack(side="bottom", pady=20)
+ctk.CTkButton(sidebar, text="Exit", fg_color="red", hover_color="#aa0000", command=app.destroy).pack(side="bottom", pady=20)
 
 # 3) Основная область (контент)
 content = ctk.CTkFrame(app, fg_color="#2a2a2a")
