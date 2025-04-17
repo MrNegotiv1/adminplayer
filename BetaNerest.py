@@ -4,12 +4,22 @@ import time
 import keyboard
 import requests
 import json
-from datetime import datetime
+import threading
+import time
+import keyboard
+import requests
 import tkinter as tk
-from tkinter import simpledialog, messagebox
+from tkinter import simpledialog
+from tkinter import messagebox
+import json
+from datetime import datetime
+from datetime import datetime
+import customtkinter as ctk
+from PIL import Image, ImageTk
 
 auto_click_speed = 0.00003
 custom_hotkey = "ctrl+shift+a"
+activation_key = "space"
 auto_e_enabled = False
 e_press_count = 0
 user_license = "free"
@@ -76,48 +86,128 @@ def monitor_rate():
 def check_space_hold():
     global auto_e_enabled
     while True:
-        auto_e_enabled = keyboard.is_pressed('space')
+        auto_e_enabled = keyboard.is_pressed(activation_key)
         time.sleep(0.01)
 threading.Thread(target=press_e_t_pattern, daemon=True).start()
 threading.Thread(target=monitor_rate, daemon=True).start()
 threading.Thread(target=check_space_hold, daemon=True).start()
 def build_pro_tab():
-    frame = tk.Frame(main_win)
+    frame = ctk.CTkFrame(content, fg_color="#2a2a2a")
+
     if user_license != "pro":
-        tk.Label(frame, text="PRO функции недоступны.", fg="red").pack(pady=20)
-        return frame
+        ctk.CTkLabel(frame, text="PRO функции недоступны.", text_color="red").pack(pady=20)
+    else:
+        ctk.CTkLabel(frame, text="Настройки PRO", font=ctk.CTkFont(size=16)).pack(pady=10)
 
-    tk.Label(frame, text="Настройки PRO", font=("Helvetica", 14)).pack(pady=10)
+        # ==== Слайдер задержки ====
+        ctk.CTkLabel(frame, text="Задержка между кликами (сек):").pack(pady=(10, 0))
+        speed_slider = ctk.CTkSlider(frame, from_=0.00001, to=0.1, number_of_steps=1000, width=300)
+        speed_slider.set(auto_click_speed)
+        speed_slider.pack(pady=10)
 
-    # Задержка между кликами
-    tk.Label(frame, text="Задержка между кликами (сек):").pack()
-    speed_entry = tk.Entry(frame)
-    speed_entry.insert(0, str(auto_click_speed))
-    speed_entry.pack()
+        current_speed_label = ctk.CTkLabel(frame, text=f"Текущая задержка: {auto_click_speed:.5f} сек")
+        current_speed_label.pack()
+
+        def on_slider_change(value):
+            current_speed_label.configure(text=f"Текущая задержка: {value:.5f} сек")
+
+        speed_slider.configure(command=on_slider_change)
+
+        def save_speed():
+            global auto_click_speed
+            auto_click_speed = speed_slider.get()
+            messagebox.showinfo("Сохранено", f"Задержка установлена: {auto_click_speed:.5f} сек")
+
+        ctk.CTkButton(frame, text="💾 Сохранить задержку", command=save_speed).pack(pady=10)
+
+    return frame  # ✅ обязательно!
+
+    # ==== Слайдер задержки ====
+    ctk.CTkLabel(frame, text="Задержка между кликами (сек):").pack(pady=(10, 0))
+    speed_slider = ctk.CTkSlider(frame, from_=0.00001, to=0.1, number_of_steps=1000, width=300)
+    speed_slider.set(auto_click_speed)
+    speed_slider.pack(pady=10)
+
+    current_speed_label = ctk.CTkLabel(frame, text=f"Текущая задержка: {auto_click_speed:.5f} сек")
+    current_speed_label.pack()
+
+    def on_slider_change(value):
+        current_speed_label.configure(text=f"Текущая задержка: {value:.5f} сек")
+
+    speed_slider.configure(command=on_slider_change)
 
     def save_speed():
         global auto_click_speed
-        try:
-            auto_click_speed = float(speed_entry.get())
-            messagebox.showinfo("Сохранено", f"Задержка: {auto_click_speed}")
-        except:
-            messagebox.showerror("Ошибка", "Введите число!")
+        auto_click_speed = speed_slider.get()
+        messagebox.showinfo("Сохранено", f"Задержка установлена: {auto_click_speed:.5f} сек")
 
-    tk.Button(frame, text="Сохранить", command=save_speed).pack(pady=5)
+    ctk.CTkButton(frame, text="💾 Сохранить задержку", command=save_speed).pack(pady=10)
+
+    # ==== Клавиша активации ====
+    key_label = ctk.CTkLabel(frame, text=f"Текущая клавиша: {activation_key.upper()}")
+    key_label.pack(pady=(20, 5))
+
+def change_key():
+    def on_key_press(e):
+        global activation_key
+        activation_key = e.keysym.lower()
+        key_label.configure(text=f"Текущая клавиша: {activation_key.upper()}")
+        top.destroy()
+        messagebox.showinfo("Готово", f"Новая клавиша: {activation_key.upper()}")
+
+    top = tk.Toplevel()
+    top.title("Новая клавиша")
+    top.geometry("300x100")
+    label = tk.Label(top, text="Нажмите новую клавишу...", font=("Arial", 12))
+    label.pack(pady=20)
+    top.bind("<Key>", on_key_press)
+    top.lift()
+    top.attributes("-topmost", True)
+
+    ctk.CTkButton(frame, text="🎯 Изменить клавишу активации", command=change_key).pack(pady=5)
+
     return frame
+
 def build_beta_tab():
-    frame = tk.Frame(main_win)
+    frame = ctk.CTkFrame(content, fg_color="#2a2a2a")
+
     if user_license != "beta":
         tk.Label(frame, text="BETA функции недоступны.", fg="red").pack(pady=20)
-        return frame
+    else:
+        tk.Label(frame, text="Экспериментальные функции BETA", font=("Helvetica", 14)).pack(pady=10)
+        tk.Label(frame, text="(пока пусто)").pack()
 
-    tk.Label(frame, text="Экспериментальные функции BETA", font=("Helvetica", 14)).pack(pady=10)
-    tk.Label(frame, text="(пока пусто)").pack()
-    return frame
+    return frame  # ✅ всегда возвращаем frame
+# Глобальная переменная
+activation_key = "space"
+
 def build_settings_tab():
-    frame = tk.Frame(main_win)
-    tk.Label(frame, text="Общие настройки", font=("Helvetica", 14)).pack(pady=10)
+    global activation_key
+
+    frame = ctk.CTkFrame(content, fg_color="#2a2a2a")
+    ctk.CTkLabel(frame, text="Общие настройки", font=ctk.CTkFont(size=16)).pack(pady=10)
+
+    # Текущая клавиша
+    key_label = ctk.CTkLabel(frame, text=f"Текущая клавиша: {activation_key.upper()}")
+    key_label.pack(pady=(20, 5))
+
+    # Кнопка смены клавиши
+    def change_activation_key():
+        messagebox.showinfo("Изменение клавиши", "Нажмите новую клавишу...")
+
+        def wait_for_key():
+            global activation_key
+            new_key = keyboard.read_event().name
+            activation_key = new_key.lower()
+            key_label.configure(text=f"Текущая клавиша: {activation_key.upper()}")
+            messagebox.showinfo("Готово", f"Клавиша изменена на: {activation_key.upper()}")
+
+        threading.Thread(target=wait_for_key, daemon=True).start()
+
+    ctk.CTkButton(frame, text="🎯 Изменить клавишу активации", command=change_activation_key).pack(pady=5)
+
     return frame
+
 frames = {}
 
 def show_frame(name):
@@ -129,60 +219,64 @@ def update_status():
         status = "Включён" if auto_e_enabled else "Отключён"
         status_label.config(text=f"Статус автокликера: {status}")
         time.sleep(0.5)
-main_win = tk.Tk()
-main_win.overrideredirect(True)
-main_win.geometry("500x400")
-main_win.config(bg="#d0d0d0")
 
-# Заголовок кастомный
-title_bar = tk.Frame(main_win, bg="#4a4a4a", relief="raised", bd=0)
-title_bar.pack(fill="x")
+# Настройки темы
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")  # можешь поменять на "green", "dark-blue", "blue"
 
-title_label = tk.Label(title_bar, text="BETA NEREST", bg="#4a4a4a", fg="white")
-title_label.pack(side="left", padx=10)
+# 1) Инициализируем окно
+app = ctk.CTk()
+app.title("NEREST LUXE")
+app.geometry("700x450")
+app.attributes("-topmost", True)
 
-# Закрыть окно
-close_button = tk.Button(title_bar, text="✕", bg="#4a4a4a", fg="white", bd=0, command=main_win.destroy)
-close_button.pack(side="right", padx=10)
+# 2) Левая панель (меню)
+sidebar = ctk.CTkFrame(app, width=150, corner_radius=0, fg_color="#1f1f1f")
+sidebar.pack(side="left", fill="y")
 
-# Перетаскивание
-def start_move(event):
-    main_win.x = event.x
-    main_win.y = event.y
+logo_label = ctk.CTkLabel(sidebar, text="NEREST", font=ctk.CTkFont(size=20, weight="bold"))
+logo_label.pack(pady=(20, 10))
 
-def stop_move(event):
-    main_win.x = None
-    main_win.y = None
+# Кнопки меню
+def show_frame(name):
+    for frame in [settings_frame, pro_frame, beta_frame]:
+        frame.pack_forget()
+    if name == "settings":
+        settings_frame.pack(fill="both", expand=True)
+    elif name == "pro":
+        pro_frame.pack(fill="both", expand=True)
+    elif name == "beta":
+        beta_frame.pack(fill="both", expand=True)
 
-def do_move(event):
-    deltax = event.x - main_win.x
-    deltay = event.y - main_win.y
-    x = main_win.winfo_x() + deltax
-    y = main_win.winfo_y() + deltay
-    main_win.geometry(f"+{x}+{y}")
+ctk.CTkButton(sidebar, text="⚙ Настройки", command=lambda: show_frame("settings")).pack(pady=10)
+ctk.CTkButton(sidebar, text="💎 PRO", command=lambda: show_frame("pro")).pack(pady=10)
+ctk.CTkButton(sidebar, text="🧪 BETA", command=lambda: show_frame("beta")).pack(pady=10)
+# Надпись с ссылкой на Telegram
+ctk.CTkLabel(sidebar, text="Наш Telegram:", text_color="white", font=ctk.CTkFont(size=12)).pack(side="bottom", pady=(0, 2))
+ctk.CTkLabel(sidebar, text="@nerest_skripts", text_color="lightblue", font=ctk.CTkFont(size=12, underline=True)).pack(side="bottom")
+ctk.CTkButton(sidebar, text="❌ Выход", fg_color="red", hover_color="#aa0000", command=app.destroy).pack(side="bottom", pady=20)
 
-title_bar.bind("<Button-1>", start_move)
-title_bar.bind("<B1-Motion>", do_move)
-button_frame = tk.Frame(main_win, bg="#d0d0d0")
-button_frame.pack()
+# 3) Основная область (контент)
+content = ctk.CTkFrame(app, fg_color="#2a2a2a")
+content.pack(side="left", fill="both", expand=True)
 
-tk.Button(button_frame, text="Настройки", command=lambda: show_frame("settings")).pack(side="left", padx=5, pady=5)
-tk.Button(button_frame, text="PRO", command=lambda: show_frame("pro")).pack(side="left", padx=5)
-tk.Button(button_frame, text="BETA", command=lambda: show_frame("beta")).pack(side="left", padx=5)
-frames["settings"] = build_settings_tab()
-frames["pro"] = build_pro_tab()
-frames["beta"] = build_beta_tab()
+settings_frame = build_settings_tab()
+pro_frame = build_pro_tab()
+beta_frame = build_beta_tab()
 
+# Добавим контент в каждую вкладку
+ctk.CTkLabel(settings_frame, text="Общие настройки", font=ctk.CTkFont(size=16)).pack(pady=20)
+ctk.CTkLabel(pro_frame, text="PRO настройки", font=ctk.CTkFont(size=16)).pack(pady=20)
+ctk.CTkLabel(beta_frame, text="BETA функции (экспериментальные)", font=ctk.CTkFont(size=16)).pack(pady=20)
+
+# По умолчанию — настройки
 show_frame("settings")
-status_label = tk.Label(main_win, text="Статус автокликера: Отключён", font=("Helvetica", 12), bg="#d0d0d0")
-status_label.pack(pady=5)
 
-tk.Label(main_win, text=f"Лицензия: {user_license.upper()}", font=("Helvetica", 12), bg="#d0d0d0").pack()
+# 4) Запускаем
+app.mainloop()
 
-tk.Button(main_win, text="❌ Выход", bg="red", fg="white", command=lambda: (main_win.destroy(), exit())).pack(pady=10)
-tk.Label(main_win, text="telegram – @nerest_skripts", fg="gray", bg="#d0d0d0").pack(side="bottom", pady=5)
+# --- Конец люкс‑интерфейса ---
 
-threading.Thread(target=update_status, daemon=True).start()
 
 def toggle_auto_clicker():
     global auto_e_enabled
@@ -191,19 +285,31 @@ def toggle_auto_clicker():
 if user_license == "pro":
     keyboard.add_hotkey(custom_hotkey, toggle_auto_clicker)
 
-# ▶️ ВКЛ/ВЫКЛ ОКНА ПО INSERT
+# === Переменная состояния окна ===
 window_visible = True
 
 def toggle_window():
     global window_visible
     if window_visible:
-        main_win.withdraw()
+        app.withdraw()
     else:
-        main_win.deiconify()
+        app.deiconify()
+        app.lift()
+        app.focus_force()
     window_visible = not window_visible
 
-keyboard.add_hotkey("insert", toggle_window)
-main_win.mainloop()
+# === Отдельный поток слежения за Insert ===
+def insert_listener():
+    while True:
+        if keyboard.is_pressed("insert"):
+            toggle_window()
+            while keyboard.is_pressed("insert"):  # Ждём отпускания
+                time.sleep(0.1)
+        time.sleep(0.1)
+
+threading.Thread(target=insert_listener, daemon=True).start()
+
+app.mainloop()
 
 if __name__ == '__main__':
     main()
