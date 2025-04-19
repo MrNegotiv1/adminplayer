@@ -74,11 +74,11 @@ if not user_token:
 
 tokens = load_tokens()
 if not is_token_valid(user_token, tokens):
-    messagebox.showerror("Ошибка", "❌ Неверный или просроченный токен.\nтгк @nerest_skripts")
+    messagebox.showerror("Ошибка", "Неверный или просроченный токен.\nтгк @nerest_skripts")
     exit()
 
 user_license = get_license(user_token, tokens)
-messagebox.showinfo("Успешно", f"✅ Доступ разрешён для {user_license.upper()} версии.\nУдачной игры.")
+messagebox.showinfo("Успешно", f"Доступ разрешён для {user_license.upper()} версии.\nУдачной игры.")
 def press_e_t_pattern():
     global e_press_count, auto_click_speed
     pattern = "eeeeeeeeE"
