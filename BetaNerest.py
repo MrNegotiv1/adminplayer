@@ -6,6 +6,7 @@ import requests
 import json
 import threading
 import time
+import random
 import sys
 import keyboard
 import requests
@@ -92,6 +93,22 @@ def press_e_t_pattern():
             time.sleep(auto_click_speed)
         else:
             time.sleep(0.01)
+
+options = ['k@mень', '6ymага', 'HoжHицы']
+last_move = None
+
+def send_random_move():
+    global last_move
+    move = random.choice(options)
+    while move == last_move:
+        move = random.choice(options)
+    last_move = move
+    keyboard.press_and_release('enter')
+    time.sleep(0.05)
+    keyboard.write(move)
+    time.sleep(0.05)
+    keyboard.press_and_release('enter')
+
 def monitor_rate():
     global e_press_count
     while True:
@@ -107,14 +124,18 @@ threading.Thread(target=press_e_t_pattern, daemon=True).start()
 threading.Thread(target=monitor_rate, daemon=True).start()
 threading.Thread(target=check_space_hold, daemon=True).start()
 def build_pro_tab():
+    global enable_rps_hotkey
+
     frame = ctk.CTkFrame(content, fg_color="#2a2a2a")
+
+    enable_rps_hotkey = tk.BooleanVar(master=frame, value=True)  # ← переместил ВНУТРЬ функции
 
     if user_license != "pro":
         ctk.CTkLabel(frame, text="PRO функции недоступны.", text_color="red").pack(pady=20)
     else:
         ctk.CTkLabel(frame, text="Настройки PRO", font=ctk.CTkFont(size=16)).pack(pady=10)
 
-        # ==== Слайдер задержки ====
+        # Слайдер скорости
         ctk.CTkLabel(frame, text="Скорость между кликами:").pack(pady=(10, 0))
         speed_slider = ctk.CTkSlider(frame, from_=0.00001, to=0.1, number_of_steps=1000, width=300)
         speed_slider.set(auto_click_speed)
@@ -135,7 +156,23 @@ def build_pro_tab():
 
         ctk.CTkButton(frame, text="Сохранить скорость", command=save_speed).pack(pady=10)
 
-    return frame # ✅ обязательно!
+        # ✅ Галочка для F2
+        def toggle_rps():
+            if enable_rps_hotkey.get():
+                keyboard.add_hotkey('F2', send_random_move)
+            else:
+                keyboard.remove_hotkey('F2')
+
+        rps_checkbox = ctk.CTkCheckBox(frame,
+                                       text="Включить рандом кмн на F2",
+                                       variable=enable_rps_hotkey,
+                                       command=toggle_rps)
+        rps_checkbox.pack(pady=10)
+
+        if enable_rps_hotkey.get():
+            keyboard.add_hotkey('F2', send_random_move)
+
+    return frame
 
     # ==== Слайдер задержки ====
     ctk.CTkLabel(frame, text="Скорость между кликами:").pack(pady=(10, 0))
@@ -209,18 +246,16 @@ def build_settings_tab():
 
     # Кнопка смены клавиши
     def change_activation_key():
-        messagebox.showinfo("Изменение клавиши", "Нажмите новую клавишу...")
-
         def wait_for_key():
             global activation_key
+            key_label.configure(text="Ожидание клавиши...")
             new_key = keyboard.read_event().name
             activation_key = new_key.lower()
             key_label.configure(text=f"Текущая клавиша: {activation_key.upper()}")
-            messagebox.showinfo("Готово", f"Клавиша изменена на: {activation_key.upper()}")
 
         threading.Thread(target=wait_for_key, daemon=True).start()
 
-        ctk.CTkButton(frame, text="Изменить клавишу активации", command=change_key).pack(pady=5)
+    ctk.CTkButton(frame, text="Изменить клавишу активации", command=change_activation_key).pack(pady=5)
 
     return frame
 
