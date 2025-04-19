@@ -115,46 +115,46 @@ def build_pro_tab():
         ctk.CTkLabel(frame, text="Настройки PRO", font=ctk.CTkFont(size=16)).pack(pady=10)
 
         # ==== Слайдер задержки ====
-        ctk.CTkLabel(frame, text="Задержка между кликами (сек):").pack(pady=(10, 0))
+        ctk.CTkLabel(frame, text="Скорость между кликами:").pack(pady=(10, 0))
         speed_slider = ctk.CTkSlider(frame, from_=0.00001, to=0.1, number_of_steps=1000, width=300)
         speed_slider.set(auto_click_speed)
         speed_slider.pack(pady=10)
 
-        current_speed_label = ctk.CTkLabel(frame, text=f"Текущая задержка: {auto_click_speed:.5f} сек")
+        current_speed_label = ctk.CTkLabel(frame, text=f"Текущая скорость: {auto_click_speed:.5f}")
         current_speed_label.pack()
 
         def on_slider_change(value):
-            current_speed_label.configure(text=f"Текущая задержка: {value:.5f} сек")
+            current_speed_label.configure(text=f"Текущая скорость: {value:.5f}")
 
         speed_slider.configure(command=on_slider_change)
 
         def save_speed():
             global auto_click_speed
             auto_click_speed = speed_slider.get()
-            messagebox.showinfo("Сохранено", f"Задержка установлена: {auto_click_speed:.5f} сек")
+            messagebox.showinfo("Сохранено", f"Скорость установлена: {auto_click_speed:.5f}")
 
-        ctk.CTkButton(frame, text="Сохранить задержку", command=save_speed).pack(pady=10)
+        ctk.CTkButton(frame, text="Сохранить скорость", command=save_speed).pack(pady=10)
 
     return frame # ✅ обязательно!
 
     # ==== Слайдер задержки ====
-    ctk.CTkLabel(frame, text="Задержка между кликами (сек):").pack(pady=(10, 0))
+    ctk.CTkLabel(frame, text="Скорость между кликами:").pack(pady=(10, 0))
     speed_slider = ctk.CTkSlider(frame, from_=0.00001, to=0.1, number_of_steps=1000, width=300)
     speed_slider.set(auto_click_speed)
     speed_slider.pack(pady=10)
 
-    current_speed_label = ctk.CTkLabel(frame, text=f"Текущая задержка: {auto_click_speed:.5f} сек")
+    current_speed_label = ctk.CTkLabel(frame, text=f"Текущая скорость: {auto_click_speed:.5f}")
     current_speed_label.pack()
 
     def on_slider_change(value):
-        current_speed_label.configure(text=f"Текущая задержка: {value:.5f} сек")
+        current_speed_label.configure(text=f"Текущая скорость: {value:.5f}")
 
     speed_slider.configure(command=on_slider_change)
 
     def save_speed():
         global auto_click_speed
         auto_click_speed = speed_slider.get()
-        messagebox.showinfo("Сохранено", f"Задержка установлена: {auto_click_speed:.5f} сек")
+        messagebox.showinfo("Сохранено", f"Скорость установлена: {auto_click_speed:.5f}")
 
         ctk.CTkButton(frame, text="Сохранить задержку", command=save_speed).pack(pady=10)
 
@@ -188,7 +188,7 @@ def build_beta_tab():
     frame = ctk.CTkFrame(content, fg_color="#2a2a2a")
 
     if user_license != "beta":
-        tk.Label(frame, text="BETA функции недоступны.", text_color="red").pack(pady=20)
+        tk.Label(frame, text="BETA функции недоступны.", fg="red").pack(pady=20)
     else:
         tk.Label(frame, text="Экспериментальные функции BETA", font=("Helvetica", 14)).pack(pady=10)
         tk.Label(frame, text="(пока пусто)").pack()
@@ -201,7 +201,7 @@ def build_settings_tab():
     global activation_key
 
     frame = ctk.CTkFrame(content, fg_color="#2a2a2a")
-    ctk.CTkLabel(frame, text="Общие настройки", font=ctk.CTkFont(size=16)).pack(pady=10)
+    ctk.CTkLabel(frame, text="Общие настройки free", font=ctk.CTkFont(size=16)).pack(pady=10)
 
     # Текущая клавиша
     key_label = ctk.CTkLabel(frame, text=f"Текущая клавиша: {activation_key.upper()}")
