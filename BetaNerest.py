@@ -78,7 +78,7 @@ if not is_token_valid(user_token, tokens):
     exit()
 
 user_license = get_license(user_token, tokens)
-messagebox.showinfo("Успешно", f"✅ Доступ разрешён для {user_license.upper()} версии.\nУдерживайте ПРОБЕЛ для активации.")
+messagebox.showinfo("Успешно", f"✅ Доступ разрешён для {user_license.upper()} версии.\nУдачной игры.")
 def press_e_t_pattern():
     global e_press_count, auto_click_speed
     pattern = "eeeeeeeeE"
@@ -133,7 +133,7 @@ def build_pro_tab():
             auto_click_speed = speed_slider.get()
             messagebox.showinfo("Сохранено", f"Задержка установлена: {auto_click_speed:.5f} сек")
 
-        ctk.CTkButton(frame, text="💾 Сохранить задержку", command=save_speed).pack(pady=10)
+        ctk.CTkButton(frame, text="Сохранить задержку", command=save_speed).pack(pady=10)
 
     return frame # ✅ обязательно!
 
@@ -156,7 +156,7 @@ def build_pro_tab():
         auto_click_speed = speed_slider.get()
         messagebox.showinfo("Сохранено", f"Задержка установлена: {auto_click_speed:.5f} сек")
 
-        ctk.CTkButton(frame, text="💾 Сохранить задержку", command=save_speed).pack(pady=10)
+        ctk.CTkButton(frame, text="Сохранить задержку", command=save_speed).pack(pady=10)
 
 
     # ==== Клавиша активации ====
@@ -180,7 +180,7 @@ def change_key():
     top.lift()
     top.attributes("-topmost", True)
 
-    ctk.CTkButton(frame, text="🎯 Изменить клавишу активации", command=change_key).pack(pady=5)
+    ctk.CTkButton(frame, text="Изменить клавишу активации", command=change_key).pack(pady=5)
 
     return frame
 
@@ -220,7 +220,7 @@ def build_settings_tab():
 
         threading.Thread(target=wait_for_key, daemon=True).start()
 
-        ctk.CTkButton(frame, text="🎯 Изменить клавишу активации", command=change_key).pack(pady=5)
+        ctk.CTkButton(frame, text="Изменить клавишу активации", command=change_key).pack(pady=5)
 
     return frame
 
@@ -309,7 +309,7 @@ exit_button_style = {
     "font": ctk.CTkFont(family="Segoe UI Emoji", size=15, weight="bold")
 }
 
-ctk.CTkButton(sidebar, text="❌ Выход", command=exit_app, **exit_button_style).pack(side="bottom", pady=20)
+ctk.CTkButton(sidebar, text="Выход", command=exit_app, **exit_button_style).pack(side="bottom", pady=20)
 
 # 3) Основная область (контент)
 content = ctk.CTkFrame(app, fg_color="#2a2a2a")
