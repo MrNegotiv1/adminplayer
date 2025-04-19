@@ -291,9 +291,9 @@ button_style = {
     "height": 40
 }
 
-ctk.CTkButton(sidebar, text="⚙ Настройки", command=lambda: show_frame("settings"), **button_style).pack(pady=8)
-ctk.CTkButton(sidebar, text="💎 PRO", command=lambda: show_frame("pro"), **button_style).pack(pady=8)
-ctk.CTkButton(sidebar, text="🧪 BETA", command=lambda: show_frame("beta"), **button_style).pack(pady=8)
+ctk.CTkButton(sidebar, text="Настройки", command=lambda: show_frame("settings"), **button_style).pack(pady=8)
+ctk.CTkButton(sidebar, text="PRO", command=lambda: show_frame("pro"), **button_style).pack(pady=8)
+ctk.CTkButton(sidebar, text="BETA", command=lambda: show_frame("beta"), **button_style).pack(pady=8)
 # Надпись с ссылкой на Telegram
 ctk.CTkLabel(sidebar, text="Наш Telegram:", text_color="white", font=ctk.CTkFont(size=12)).pack(side="bottom", pady=(0, 2))
 ctk.CTkLabel(sidebar, text="@nerest_skripts", text_color="lightblue", font=ctk.CTkFont(size=12, underline=True)).pack(side="bottom")
