@@ -188,7 +188,7 @@ def build_beta_tab():
     frame = ctk.CTkFrame(content, fg_color="#2a2a2a")
 
     if user_license != "beta":
-        tk.Label(frame, text="BETA функции недоступны.", fg="red").pack(pady=20)
+        tk.Label(frame, text="BETA функции недоступны.", text_color="red").pack(pady=20)
     else:
         tk.Label(frame, text="Экспериментальные функции BETA", font=("Helvetica", 14)).pack(pady=10)
         tk.Label(frame, text="(пока пусто)").pack()
