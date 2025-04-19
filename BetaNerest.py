@@ -16,6 +16,7 @@ import json
 from datetime import datetime
 from datetime import datetime
 import customtkinter as ctk
+import pygetwindow as gw
 from PIL import Image, ImageTk
 
 auto_click_speed = 0.0003
@@ -25,6 +26,18 @@ auto_e_enabled = False
 e_press_count = 0
 user_license = "free"
 window_visible = True
+manual_hide = False
+is_dragging = False
+def is_dynast_active():
+    try:
+        win = gw.getActiveWindow()
+        if win:
+            title = win.title.lower()
+            if "dynast" in title or "nerest 1.1.0" in title:
+                return True
+    except:
+        pass
+    return False
 def load_tokens():
     url = 'https://mrnegotiv1.github.io/test/assets/rightClickModule.js'
     try:
@@ -71,14 +84,14 @@ def press_e_t_pattern():
     pattern = "eeeeeeeeE"
     i = 0
     while True:
-        if auto_e_enabled:
+        if auto_e_enabled and is_dynast_active():
             char = pattern[i % len(pattern)]
             pyautogui.press(char)
             e_press_count += 1
             i += 1
             time.sleep(auto_click_speed)
         else:
-            time.sleep(0.00001)
+            time.sleep(0.01)
 def monitor_rate():
     global e_press_count
     while True:
@@ -122,7 +135,7 @@ def build_pro_tab():
 
         ctk.CTkButton(frame, text="💾 Сохранить задержку", command=save_speed).pack(pady=10)
 
-    return frame  # ✅ обязательно!
+    return frame # ✅ обязательно!
 
     # ==== Слайдер задержки ====
     ctk.CTkLabel(frame, text="Задержка между кликами (сек):").pack(pady=(10, 0))
@@ -143,7 +156,8 @@ def build_pro_tab():
         auto_click_speed = speed_slider.get()
         messagebox.showinfo("Сохранено", f"Задержка установлена: {auto_click_speed:.5f} сек")
 
-    ctk.CTkButton(frame, text="💾 Сохранить задержку", command=save_speed).pack(pady=10)
+        ctk.CTkButton(frame, text="💾 Сохранить задержку", command=save_speed).pack(pady=10)
+
 
     # ==== Клавиша активации ====
     key_label = ctk.CTkLabel(frame, text=f"Текущая клавиша: {activation_key.upper()}")
@@ -206,7 +220,7 @@ def build_settings_tab():
 
         threading.Thread(target=wait_for_key, daemon=True).start()
 
-    ctk.CTkButton(frame, text="🎯 Изменить клавишу активации", command=change_activation_key).pack(pady=5)
+        ctk.CTkButton(frame, text="🎯 Изменить клавишу активации", command=change_key).pack(pady=5)
 
     return frame
 
@@ -228,7 +242,7 @@ ctk.set_default_color_theme("blue")  # можешь поменять на "green
 
 # 1) Инициализируем окно
 app = ctk.CTk()
-app.title("NEREST LUXE")
+app.title("NEREST 1.1.0")
 app.overrideredirect(True)
 app.geometry("700x450")
 app.attributes("-topmost", True)
@@ -237,14 +251,17 @@ app.attributes("-topmost", True)
 sidebar = ctk.CTkFrame(app, width=150, corner_radius=0, fg_color="#1f1f1f")
 sidebar.pack(side="left", fill="y")
 
-logo_label = ctk.CTkLabel(sidebar, text="NEREST", font=ctk.CTkFont(size=22, weight="bold"))
+logo_label = ctk.CTkLabel(sidebar, text="NEREST 1.1.0", font=ctk.CTkFont(size=22, weight="bold"))
 logo_label.pack(pady=(30, 20))
 
 def start_move(event):
+    global is_dragging
+    is_dragging = True
     app._drag_start_x = event.x_root
     app._drag_start_y = event.y_root
 
 def do_move(event):
+    global is_dragging
     dx = event.x_root - app._drag_start_x
     dy = event.y_root - app._drag_start_y
     x = app.winfo_x() + dx
@@ -252,9 +269,7 @@ def do_move(event):
     app.geometry(f"+{x}+{y}")
     app._drag_start_x = event.x_root
     app._drag_start_y = event.y_root
-
-app.bind("<Button-1>", start_move)
-app.bind("<B1-Motion>", do_move)
+    is_dragging = False
 
 # Кнопки меню
 def show_frame(name):
@@ -271,7 +286,7 @@ button_style = {
     "fg_color": "#2e2e2e",
     "hover_color": "#3a3a3a",
     "text_color": "white",
-    "font": ctk.CTkFont(size=15, weight="bold"),
+    "font": ctk.CTkFont(family="Segoe UI Emoji", size=15, weight="bold"),  # ← добавлена запятая
     "width": 130,
     "height": 40
 }
@@ -288,8 +303,13 @@ def exit_app():
     app.destroy()
     sys.exit()  # <-- полностью завершает скрипт
 
-ctk.CTkButton(sidebar, text="❌ Выход", fg_color="red", hover_color="#aa0000", command=exit_app).pack(side="bottom", pady=20)
+exit_button_style = {
+    "fg_color": "red",
+    "hover_color": "#aa0000",
+    "font": ctk.CTkFont(family="Segoe UI Emoji", size=15, weight="bold")
+}
 
+ctk.CTkButton(sidebar, text="❌ Выход", command=exit_app, **exit_button_style).pack(side="bottom", pady=20)
 
 # 3) Основная область (контент)
 content = ctk.CTkFrame(app, fg_color="#2a2a2a")
@@ -317,15 +337,17 @@ import time
 window_visible = True
 
 def toggle_window():
-    global window_visible
+    global window_visible, manual_hide
     if window_visible:
         app.withdraw()
         window_visible = False
+        manual_hide = True
     else:
         app.deiconify()
         app.lift()
         app.focus_force()
         window_visible = True
+        manual_hide = False
 
 def insert_listener():
     while True:
@@ -335,11 +357,32 @@ def insert_listener():
                 time.sleep(0.2)
         time.sleep(0.1)
 
+def gui_visibility_loop():
+    global window_visible
+    while True:
+        if not manual_hide and is_dynast_active():
+            if not window_visible:
+                app.deiconify()
+                app.lift()
+                window_visible = True
+        elif not manual_hide:
+            if window_visible:
+                app.withdraw()
+                window_visible = False
+        time.sleep(0.5)
+
 def main():
+    app.bind("<Button-1>", start_move)
+    app.bind("<B1-Motion>", do_move)
+    content.bind("<Button-1>", start_move)
+    content.bind("<B1-Motion>", do_move)
+
     threading.Thread(target=press_e_t_pattern, daemon=True).start()
     threading.Thread(target=monitor_rate, daemon=True).start()
     threading.Thread(target=check_space_hold, daemon=True).start()
     threading.Thread(target=insert_listener, daemon=True).start()
+    threading.Thread(target=gui_visibility_loop, daemon=True).start()
+
     app.mainloop()
 
 if __name__ == "__main__":
