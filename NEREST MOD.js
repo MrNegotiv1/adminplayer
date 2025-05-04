@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         NEREST MOD PRIVAT testкуку
+// @name         NEREST MOD PRIVAT
 // @namespace    http://tampermonkey.net/
 // @version      1.2
-// @description  Извлекает активный токен из внешнего скрипта и выводит в консоль
-// @author       Вы
+// @description  nerest
+// @author       nerest project
 // @match        *://*.moomoo.io/*
 // @match        *://dev.moomoo.io/*
 // @match        *://sandbox.moomoo.io/*
