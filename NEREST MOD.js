@@ -9057,21 +9057,21 @@ function receiveChat(sid, message) {
                             tmpContext.fill();
                         } else if (obj.name == "spikes" || obj.name == "greater spikes" || obj.name == "poison spikes" ||
                                    obj.name == "spinning spikes") {
-                            tmpContext.fillStyle = (obj.name == "poison spikes") ? "#FFFFFF" : "#FFFFFF";
+                            tmpContext.fillStyle = (obj.name == "poison spikes") ? "#590404" : "#590404";
                             let tmpScale = (obj.scale * 0.6);
                             renderStar(tmpContext, (obj.name == "spikes") ? 5 : 6, obj.scale, tmpScale);
                             tmpContext.fill();
                             tmpContext.stroke();
-                            tmpContext.fillStyle = "#FFFFFF";
+                            tmpContext.fillStyle = "#590404";
                             renderCircle(0, 0, tmpScale, tmpContext);
-                            tmpContext.fillStyle = "#FFFFFF";
+                            tmpContext.fillStyle = "#590404";
                             renderCircle(0, 0, tmpScale / 2, tmpContext, true);
                         } else if (obj.name == "windmill" || obj.name == "faster windmill" || obj.name == "power mill") {
-                            tmpContext.fillStyle = "#FFFFFF";
+                            tmpContext.fillStyle = "#000000";
                             renderCircle(0, 0, reScale, tmpContext);
-                            tmpContext.fillStyle = "#FFFFFF";
+                            tmpContext.fillStyle = "#000000";
                             renderRectCircle(0, 0, reScale * 1.5, 29, 4, tmpContext);
-                            tmpContext.fillStyle = "#FFFFFF";
+                            tmpContext.fillStyle = "#000000";
                             renderCircle(0, 0, reScale * 0.5, tmpContext);
                         } else if (obj.name == "mine") {
                             tmpContext.fillStyle = "#939393";
@@ -9090,7 +9090,7 @@ function receiveChat(sid, message) {
                                 if (!i) tmpContext.stroke();
                             }
                         } else if (obj.name == "pit trap") {
-                            tmpContext.fillStyle = "#a5974c";
+                            tmpContext.fillStyle = "#590404";
                             renderStar(tmpContext, 3, obj.scale * 1.1, obj.scale * 1.1);
                             tmpContext.fill();
                             tmpContext.stroke();
